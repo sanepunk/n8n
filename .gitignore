@@ -1,0 +1,12 @@
+re1.py
+.env
+*.code-workspace
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz
+*.pyzwzw
