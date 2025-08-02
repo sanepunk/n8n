@@ -63,6 +63,17 @@ The bot expects the following data structure through the Streamlit interface:
    - Displayed in Streamlit interface
    - Historical reports available for review
 
+## Project Structure
+
+```
+n8n-agent/
+├── app.py                 # Main Streamlit application
+├── requirements.txt       # Python dependencies
+├── README.md             # Project documentation
+├── agent_description.md  # Agent workflow documentation
+└── .gitignore           # Git ignore rules
+```
+
 ## Setup
 
 1. Install required dependencies:
@@ -79,7 +90,7 @@ POSTGRES_CONNECTION_STRING=your_postgres_connection_string
 
 3. Run the Streamlit application:
 ```bash
-streamlit run src/app.py
+streamlit run app.py
 ```
 
 ## Sample Output
@@ -113,45 +124,3 @@ You're building a great skill set, Rohan. Keep up the curiosity and effort!
 - Google Gemini API access
 - PostgreSQL database
 - Required Python packages (see requirements.txt)
-
-## Project Structure
-
-```
-n8n-agent/
-├── src/
-│   ├── app.py                 # Main Streamlit application
-│   ├── config/
-│   │   ├── __init__.py
-│   │   └── settings.py        # Configuration settings
-│   ├── database/
-│   │   ├── __init__.py
-│   │   ├── models.py          # SQLAlchemy models
-│   │   └── connection.py      # Database connection handling
-│   ├── services/
-│   │   ├── __init__.py
-│   │   ├── gemini_service.py  # Gemini API integration
-│   │   ├── n8n_service.py     # N8N webhook handlers
-│   │   └── report_service.py  # Report generation logic
-│   └── utils/
-│       ├── __init__.py
-│       ├── validators.py      # Input validation
-│       └── formatters.py      # Data formatting utilities
-├── tests/
-│   ├── __init__.py
-│   ├── test_services/
-│   │   └── test_report_generation.py
-│   └── test_utils/
-│       └── test_validators.py
-├── .env.example               # Example environment variables
-├── requirements.txt           # Python dependencies
-├── README.md
-└── .gitignore
-```
-
-## License
-
-[Add your license information here]
-
-## Author
-
-[Your Name]
