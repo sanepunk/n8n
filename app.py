@@ -8,10 +8,8 @@ import psycopg2
 import time
 from datetime import timezone
 
-# Load environment variables
 load_dotenv()
 
-# PostgreSQL connection parameters
 def get_db_connection():
     return psycopg2.connect(
         host=os.getenv("host"),
@@ -21,7 +19,6 @@ def get_db_connection():
         port=os.getenv("port")
     )
 
-# Function to fetch all records
 def get_all_records():
     conn = get_db_connection()
     cur = conn.cursor()
@@ -31,7 +28,6 @@ def get_all_records():
     conn.close()
     return records
 
-# Function to check for analysis result with retries
 def get_analysis_result(student_id, max_retries=10, delay_seconds=2):
     for attempt in range(max_retries):
         try:
@@ -50,7 +46,6 @@ def get_analysis_result(student_id, max_retries=10, delay_seconds=2):
             if result:
                 return result
             
-            # Show progress
             remaining = max_retries - attempt - 1
             st.info(f"Waiting for analysis... (Attempts remaining: {remaining})")
             time.sleep(delay_seconds)
@@ -61,17 +56,14 @@ def get_analysis_result(student_id, max_retries=10, delay_seconds=2):
     
     return None
 
-# Set page title
 st.title('Student Performance Analysis')
 
-# Debug section for webhook URL
 webhook_url = os.getenv("N8N_WEBHOOK_TEST")
 if not webhook_url:
     st.error("⚠️ N8N_WEBHOOK_TEST environment variable is not set!")
 else:
     st.success(f"✓ Webhook URL is configured")
 
-# Create input form
 with st.form("student_form"):
     student_id = st.text_input("Student ID")
     name = st.text_input("Name")
@@ -85,7 +77,6 @@ with st.form("student_form"):
         if not webhook_url:
             st.error("Cannot submit: Webhook URL is not configured!")
         else:
-            # Prepare data for POST request in the format expected by n8n
             data = {
                 "StudentID": student_id,
                 "StudentName": name,
@@ -95,7 +86,6 @@ with st.form("student_form"):
             }
             
             try:
-                # Show the request being made (for debugging)
                 st.write("Sending request to n8n webhook...")
                 st.json(data)
                 
@@ -110,14 +100,11 @@ with st.form("student_form"):
                     if initial_message == 'Workflow was started':
                         st.info("Analysis in progress...")
                         
-                        # Query with retries
                         result = get_analysis_result(student_id)
                         
                         if result:
-                            # Display the latest analysis result
                             st.success("Analysis completed!")
                             
-                            # Create an expander for the new analysis
                             with st.expander("Latest Analysis Result", expanded=True):
                                 id, created_at, student_id, name, subject, percentage, topics, conclusion = result
                                 st.markdown("### Analysis Conclusion")
@@ -133,22 +120,18 @@ with st.form("student_form"):
             except Exception as e:
                 st.error(f"Error: {str(e)}")
 
-# Display records
 st.subheader("Previous Analysis Records")
 
 try:
     records = get_all_records()
     if records:
         for record in records:
-            # Updated to match the actual column names in the valve table
             id, created_at, student_id, name, subject, percentage, topics, conclusion = record
             
-            # Create an expander for each record
             with st.expander(f"Student: {name} - ID: {student_id} - Subject: {subject}"):
                 st.write(f"Percentage: {percentage}%")
                 st.write(f"Topics Needing Improvement: {topics}")
                 st.markdown("### Analysis Conclusion")
-                # Render the conclusion as markdown
                 st.markdown(conclusion)
                 st.write(f"Generated at: {created_at}")
     else:
